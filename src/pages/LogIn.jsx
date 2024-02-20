@@ -6,7 +6,7 @@ export const LogIn = () => {
   const [isLogInMode, setIsLogInMode] = useState(true);
   const navigate = useNavigate();
   return isLogInMode ? (
-    <BackGround>
+    <Background>
       <LogInFrame>
         <Title>로그인</Title>
         <InputId
@@ -26,9 +26,9 @@ export const LogIn = () => {
           회원가입
         </RegisterLink>
       </LogInFrame>
-    </BackGround>
+    </Background>
   ) : (
-    <BackGround>
+    <Background>
       <LogInFrame>
         <Title>회원가입</Title>
         <InputId
@@ -49,14 +49,14 @@ export const LogIn = () => {
           maxLength="10"
           placeholder="닉네임 (1~10글자)"
         />
-        <LogInButton>회원가입</LogInButton>
-        <RegisterLink onClick={() => setIsLogInMode(true)}>로그인</RegisterLink>
+        <RegisterButton>회원가입</RegisterButton>
+        <LogInLink onClick={() => setIsLogInMode(true)}>로그인</LogInLink>
       </LogInFrame>
-    </BackGround>
+    </Background>
   );
 };
 
-const BackGround = styled.div`
+const Background = styled.div`
   display: flex;
   background-color: lightgray;
   height: 100vh;
