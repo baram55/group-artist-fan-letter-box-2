@@ -1,57 +1,157 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setAccount } from "redux/modules/auth";
+import { toast } from "react-toastify";
 
 export const LogIn = () => {
   const [isLogInMode, setIsLogInMode] = useState(true);
   const navigate = useNavigate();
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  const dispatch = useDispatch();
+
+  const onLogInHandler = async (e) => {
+    e.preventDefault();
+    let response;
+
+    try {
+      response = await axios.post("https://moneyfulpublicpolicy.co.kr/login", {
+        id,
+        password,
+      });
+    } catch (error) {
+      toast.error(error.code); //NOTE - 에러 코드 처리하기
+      return;
+    }
+
+    const {
+      userId: receivedId,
+      nickname: receivedNickname,
+      avatar: receivedAvatar,
+      success: isSuccess,
+    } = response.data;
+
+    // console.log(
+    //   `id:${receivedId}, nickname:${receivedNickname}, avatar:${receivedAvatar}, 성공여부:${isSuccess}`
+    // );
+
+    if (isSuccess) {
+      dispatch(
+        setAccount({
+          id: receivedId,
+          nickname: receivedNickname,
+          avatar: receivedAvatar,
+          isLoggedIn: true,
+        })
+      );
+      toast.success("로그인에 성공하였습니다.");
+      navigate("/");
+      return;
+    }
+    toast.error("로그인에 실패했습니다.");
+    return;
+  };
+
+  const onRegisterHandler = async (e) => {
+    e.preventDefault();
+    let response;
+    try {
+      response = await axios.post(
+        "https://moneyfulpublicpolicy.co.kr/register",
+        { id, password, nickname }
+      );
+    } catch (error) {
+      alert(error.code); //NOTE - 에러처리
+      return;
+    }
+    const { success: isSuccess, message } = response.data;
+
+    if (isSuccess) {
+      toast.success(message);
+      setId("");
+      setPassword("");
+      setNickname("");
+      setIsLogInMode(true);
+      return;
+    }
+    alert("회원가입에 실패했습니다.");
+    return;
+  };
   return isLogInMode ? (
     <Background>
-      <LogInFrame>
+      <AccountForm>
         <Title>로그인</Title>
         <InputId
           type="text"
           minLength="4"
           maxLength="10"
           placeholder="아이디 (4~10글자)"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
         />
         <InputPw
           type="password"
           minLength="4"
           maxLength="15"
           placeholder="비밀번호 (4~15글자)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <LogInButton>로그인</LogInButton>
-        <RegisterLink onClick={() => setIsLogInMode(false)}>
+        <LogInButton
+          onClick={(e) => onLogInHandler(e)}
+          disabled={id === "" || password === ""}
+        >
+          로그인
+        </LogInButton>
+        <RegisterLink
+          onClick={() => {
+            setIsLogInMode(false);
+          }}
+        >
           회원가입
         </RegisterLink>
-      </LogInFrame>
+      </AccountForm>
     </Background>
   ) : (
     <Background>
-      <LogInFrame>
+      <AccountForm>
         <Title>회원가입</Title>
         <InputId
           type="text"
           minLength="4"
           maxLength="10"
           placeholder="아이디 (4~10글자)"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
         />
         <InputPw
           type="password"
           minLength="4"
           maxLength="15"
           placeholder="비밀번호 (4~15글자)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <InputNickname
           type="text"
           minLength="1"
           maxLength="10"
           placeholder="닉네임 (1~10글자)"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
         />
-        <RegisterButton>회원가입</RegisterButton>
+        <RegisterButton
+          disabled={id === "" || password === "" || nickname === ""}
+          onClick={(e) => onRegisterHandler(e)}
+        >
+          회원가입
+        </RegisterButton>
         <LogInLink onClick={() => setIsLogInMode(true)}>로그인</LogInLink>
-      </LogInFrame>
+      </AccountForm>
     </Background>
   );
 };
@@ -64,7 +164,7 @@ const Background = styled.div`
   align-items: center;
 `;
 
-const LogInFrame = styled.div`
+const AccountForm = styled.div`
   display: flex;
   width: 500px;
   height: 400px;
