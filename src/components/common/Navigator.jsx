@@ -1,15 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { logOut } from "../../redux/modules/auth";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 export const Navigator = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const onLogOutHandler = () => {
+    dispatch(logOut());
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+    toast.info("로그아웃 되었습니다.");
+  };
+
   return (
     <Container>
       <HomeText onClick={() => navigate("/")}>Home</HomeText>
       <HomeAndMyProfile>
-        <MyProfileText onClick={() => navigate("/")}>내 프로필</MyProfileText>
-        <LogOutText onClick={() => navigate("/login")}>로그아웃</LogOutText>
+        <MyProfileText onClick={() => navigate("/profile")}>
+          내 프로필
+        </MyProfileText>
+        <LogOutText onClick={onLogOutHandler}>로그아웃</LogOutText>
       </HomeAndMyProfile>
     </Container>
   );

@@ -1,9 +1,44 @@
 import { Navigator } from "components/common/Navigator";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import defaultAvatar from "../assets/user.svg";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const Profile = () => {
+  const [id, setId] = useState();
+  const [nickname, setNickname] = useState();
+  const [avatar, setAvatar] = useState();
+
+  const getUserInfo = async () => {
+    let response;
+    //const accessToken = localStorage.getItem("accessToken");
+    const accessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InF3ZXIxIiwiaWF0IjoxNzA4NDU1OTI3LCJleHAiOjE3MDg0NTk1Mjd9.bmcIkMy-L9k_ujT0321mi1G1oRfBBN3EuhHVT0qhX0s";
+    try {
+      response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      toast.error(error.code);
+    }
+
+    const { id, nickname, avatar, success: isSuccess } = response.data;
+
+    if (isSuccess) {
+      setId(id);
+      setNickname(nickname);
+      setAvatar(avatar);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   return (
     <>
       <Navigator />
@@ -11,8 +46,8 @@ export const Profile = () => {
         <ProfileFrame>
           <Title>프로필 관리</Title>
           <Avatar src={defaultAvatar}></Avatar>
-          <Nickname>닉네임</Nickname>
-          <Id>아이디</Id>
+          <Nickname>{nickname}</Nickname>
+          <Id>{id}</Id>
           <EditButton>수정하기</EditButton>
         </ProfileFrame>
       </Background>

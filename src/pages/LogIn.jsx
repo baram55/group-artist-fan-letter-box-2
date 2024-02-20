@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setAccount } from "redux/modules/auth";
+import { logIn } from "redux/modules/auth";
 import { toast } from "react-toastify";
 
 export const LogIn = () => {
@@ -19,7 +19,7 @@ export const LogIn = () => {
     let response;
 
     try {
-      response = await axios.post("https://moneyfulpublicpolicy.co.kr/login", {
+      response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, {
         id,
         password,
       });
@@ -28,32 +28,19 @@ export const LogIn = () => {
       return;
     }
 
-    const {
-      userId: receivedId,
-      nickname: receivedNickname,
-      avatar: receivedAvatar,
-      success: isSuccess,
-    } = response.data;
+    const { success: isSuccess, accessToken } = response.data;
 
-    // console.log(
-    //   `id:${receivedId}, nickname:${receivedNickname}, avatar:${receivedAvatar}, 성공여부:${isSuccess}`
-    // );
+    localStorage.setItem("accessToken", accessToken);
 
     if (isSuccess) {
-      dispatch(
-        setAccount({
-          id: receivedId,
-          nickname: receivedNickname,
-          avatar: receivedAvatar,
-          isLoggedIn: true,
-        })
-      );
+      dispatch(logIn());
       toast.success("로그인에 성공하였습니다.");
       navigate("/");
       return;
+    } else {
+      toast.error("로그인에 실패했습니다.");
+      return;
     }
-    toast.error("로그인에 실패했습니다.");
-    return;
   };
 
   const onRegisterHandler = async (e) => {
@@ -61,25 +48,26 @@ export const LogIn = () => {
     let response;
     try {
       response = await axios.post(
-        "https://moneyfulpublicpolicy.co.kr/register",
+        `${process.env.REACT_APP_SERVER_URL}/register`,
         { id, password, nickname }
       );
     } catch (error) {
       alert(error.code); //NOTE - 에러처리
       return;
     }
-    const { success: isSuccess, message } = response.data;
+    const { success: isSuccess } = response.data;
 
     if (isSuccess) {
-      toast.success(message);
+      toast.success("회가입이 완료되었습니다.");
       setId("");
       setPassword("");
       setNickname("");
       setIsLogInMode(true);
       return;
+    } else {
+      toast.error("회원가입에 실패했습니다.");
+      return;
     }
-    alert("회원가입에 실패했습니다.");
-    return;
   };
   return isLogInMode ? (
     <Background>
