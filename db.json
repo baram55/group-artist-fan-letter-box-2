@@ -1,3 +1,28 @@
 {
-  "letters": []
+  "letters": [
+    {
+      "id": "0949a9e7-e432-49b6-a43c-39836b68712a",
+      "nickname": "zxcv1",
+      "content": "asd",
+      "avatar": "null",
+      "writedTo": "카리나",
+      "createdAt": "2024-02-20T20:03:32.647Z"
+    },
+    {
+      "id": "36cacd48-3306-40f0-b3fe-1894029974c1",
+      "nickname": "zxcv1",
+      "content": "zxc",
+      "avatar": "null",
+      "writedTo": "카리나",
+      "createdAt": "2024-02-20T20:03:36.168Z"
+    },
+    {
+      "id": "50b2203e-b010-4e3f-b9d2-c5363df1847b",
+      "nickname": "zxcv1",
+      "content": "aaaaaaaaaaaaaaaaaa",
+      "avatar": "null",
+      "writedTo": "카리나",
+      "createdAt": "2024-02-20T20:04:48.407Z"
+    }
+  ]
 }

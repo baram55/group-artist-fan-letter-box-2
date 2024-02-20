@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { v4 as uuid } from "uuid";
 import Button from "./common/Button";
 import { useDispatch } from "react-redux";
-import { addLetter } from "redux/modules/letters";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function AddForm() {
   const dispatch = useDispatch();
@@ -18,23 +18,45 @@ export default function AddForm() {
     setNickname(localNickname);
   }, []);
 
-  const onAddLetter = (event) => {
+  const onAddLetter = async (event) => {
     event.preventDefault();
-    if (!nickname || !content)
-      return toast.warning("닉네임과 내용은 필수값입니다.");
+
+    let response;
+
+    if (content === "") return toast.warning("내용은 필수값입니다.");
 
     const newLetter = {
       id: uuid(),
-      nickname,
+      nickname: localStorage.getItem("nickname"),
       content,
-      avatar: null,
+      avatar: localStorage.getItem("avatar"),
       writedTo: member,
       createdAt: new Date(),
     };
 
-    dispatch(addLetter(newLetter));
-    setNickname("");
-    setContent("");
+    const accessToken = localStorage.getItem("accessToken");
+
+    try {
+      response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      toast.error(error.code); //NOTE - 에러 처리
+    }
+    const { success: isSuccess } = response.data;
+
+    if (isSuccess) {
+      try {
+        await axios.post("http://localhost:5000/letters", newLetter);
+      } catch (error) {
+        toast.error(error.code); //NOTE - 에러처리
+        return;
+      }
+      setContent("");
+    }
   };
 
   return (
