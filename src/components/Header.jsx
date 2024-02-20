@@ -1,12 +1,16 @@
 import Tabs from "./Tabs";
 import styled from "styled-components";
+import { Navigator } from "./common/Navigator";
 
 export default function Header() {
   return (
-    <Container>
-      <Title>에스파 팬레터함</Title>
-      <Tabs />
-    </Container>
+    <>
+      <Navigator />
+      <Container>
+        <Title>에스파 팬레터함</Title>
+        <Tabs />
+      </Container>
+    </>
   );
 }
 

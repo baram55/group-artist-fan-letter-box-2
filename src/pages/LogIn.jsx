@@ -58,7 +58,7 @@ export const LogIn = () => {
 
 const BackGround = styled.div`
   display: flex;
-  background-color: gray;
+  background-color: lightgray;
   height: 100vh;
   justify-content: center;
   align-items: center;
@@ -96,10 +96,11 @@ const InputNickname = styled.input`
 `;
 
 const LogInButton = styled.button`
-  background-color: gray;
+  background-color: lightgray;
   color: white;
   height: 100px;
   font-size: 30px;
+  border-color: lightgray;
   cursor: pointer;
 `;
 
@@ -114,15 +115,16 @@ const RegisterLink = styled.p`
 `;
 
 const RegisterButton = styled.button`
-  background-color: gray;
+  background-color: lightgray;
   color: white;
   height: 100px;
   font-size: 30px;
+  border-color: lightgray;
   cursor: pointer;
 `;
 
 const LogInLink = styled.p`
-  color: gray;
+  color: lightgray;
   text-align: center;
   margin-top: 20px;
   cursor: pointer;
