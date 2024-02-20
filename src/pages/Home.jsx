@@ -2,7 +2,7 @@ import AddForm from "components/AddForm";
 import Header from "components/Header";
 import LetterList from "components/LetterList";
 import styled from "styled-components";
-
+//NOTE - outlet 구현
 export default function Home() {
   return (
     <Container>

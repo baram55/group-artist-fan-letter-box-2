@@ -45,7 +45,10 @@ export const Profile = () => {
       <Background>
         <ProfileFrame>
           <Title>프로필 관리</Title>
-          <Avatar src={defaultAvatar}></Avatar>
+          <Avatar
+            src={avatar ? avatar : defaultAvatar}
+            alt="이미지가 없습니다."
+          ></Avatar>
           <Nickname>{nickname}</Nickname>
           <Id>{id}</Id>
           <EditButton>수정하기</EditButton>

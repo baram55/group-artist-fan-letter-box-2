@@ -11,7 +11,7 @@ export const Navigator = () => {
 
   const onLogOutHandler = () => {
     dispatch(logOut());
-    localStorage.removeItem("accessToken");
+    localStorage.clear();
     navigate("/login");
     toast.info("로그아웃 되었습니다.");
   };

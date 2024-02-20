@@ -28,12 +28,20 @@ export const LogIn = () => {
       return;
     }
 
-    const { success: isSuccess, accessToken } = response.data;
-
-    localStorage.setItem("accessToken", accessToken);
+    const {
+      userId: receivedId,
+      nickname: receivedNickname,
+      avatar: receivedAvatar,
+      success: isSuccess,
+      accessToken,
+    } = response.data;
 
     if (isSuccess) {
       dispatch(logIn());
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("id", receivedId);
+      localStorage.setItem("nickname", receivedNickname);
+      localStorage.setItem("avatar", receivedAvatar);
       toast.success("로그인에 성공하였습니다.");
       navigate("/");
       return;
