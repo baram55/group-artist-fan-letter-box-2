@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteLetter, editLetter } from "redux/modules/letters";
-import defaultAvatar from "../assets/user.svg";
 import axios from "axios";
 import { toast } from "react-toastify";
 

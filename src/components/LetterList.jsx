@@ -36,7 +36,16 @@ export default function LetterList({ refresh }) {
           toast.error(error.code);
           return;
         }
-        setLetters(response.data);
+        const currentAvatar = localStorage.getItem("avatar");
+        const userId = localStorage.getItem("id");
+        setLetters(
+          response.data.map((letter) => {
+            if (letter.userId === userId) {
+              return { ...letter, avatar: currentAvatar };
+            }
+            return letter;
+          })
+        );
       }
     };
     getLetters();
