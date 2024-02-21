@@ -88,13 +88,12 @@ export const Profile = () => {
       nickname: receivedNickname,
       success,
     } = response.data;
-
     if (success) {
       localStorage.setItem("avatar", receivedAvatar);
       localStorage.setItem("nickname", receivedNickname);
+      setNickname(editingNickname);
+      setEditMode(false);
     }
-    setNickname(editingNickname);
-    setEditMode(false);
   };
 
   const onCancelHandler = () => {
