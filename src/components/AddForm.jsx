@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export default function AddForm() {
+export default function AddForm({ setRefresh }) {
   const dispatch = useDispatch();
 
   const [nickname, setNickname] = useState("");
@@ -27,6 +27,7 @@ export default function AddForm() {
 
     const newLetter = {
       id: uuid(),
+      userId: localStorage.getItem("id"),
       nickname: localStorage.getItem("nickname"),
       content,
       avatar: localStorage.getItem("avatar"),
@@ -45,6 +46,7 @@ export default function AddForm() {
       });
     } catch (error) {
       toast.error(error.code); //NOTE - 에러 처리
+      return;
     }
     const { success: isSuccess } = response.data;
 
@@ -56,6 +58,7 @@ export default function AddForm() {
         return;
       }
       setContent("");
+      setRefresh((prev) => !prev);
     }
   };
 

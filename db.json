@@ -1,28 +1,31 @@
 {
   "letters": [
     {
-      "id": "0949a9e7-e432-49b6-a43c-39836b68712a",
+      "id": "05d004e4-187e-4a20-8219-aa8f46f70edd",
+      "userId": "qwer1",
       "nickname": "zxcv1",
-      "content": "asd",
+      "content": "aaa",
       "avatar": "null",
       "writedTo": "카리나",
-      "createdAt": "2024-02-20T20:03:32.647Z"
+      "createdAt": "2024-02-21T02:52:28.833Z"
     },
     {
-      "id": "36cacd48-3306-40f0-b3fe-1894029974c1",
+      "id": "15e68c68-ea13-46c8-a182-d53b87d8f02c",
+      "userId": "qwer1",
       "nickname": "zxcv1",
-      "content": "zxc",
+      "content": "sss",
       "avatar": "null",
       "writedTo": "카리나",
-      "createdAt": "2024-02-20T20:03:36.168Z"
+      "createdAt": "2024-02-21T02:52:30.231Z"
     },
     {
-      "id": "50b2203e-b010-4e3f-b9d2-c5363df1847b",
+      "id": "2998c5db-6c91-48c9-9714-657370aeef77",
+      "userId": "qwer1",
       "nickname": "zxcv1",
-      "content": "aaaaaaaaaaaaaaaaaa",
+      "content": "ddd",
       "avatar": "null",
       "writedTo": "카리나",
-      "createdAt": "2024-02-20T20:04:48.407Z"
+      "createdAt": "2024-02-21T02:52:31.615Z"
     }
   ]
 }

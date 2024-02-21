@@ -1,14 +1,51 @@
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import LetterCard from "./LetterCard";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-export default function LetterList() {
+export default function LetterList({ refresh }) {
   const activeMember = useSelector((state) => state.member);
-  const letters = useSelector((state) => state.letters);
+  const [letters, setLetters] = useState([]);
+
+  useEffect(() => {
+    const getLetters = async () => {
+      let response;
+      const accessToken = localStorage.getItem("accessToken");
+      try {
+        response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      } catch (error) {
+        toast.error(error.code);
+        return;
+      }
+
+      const { success: isSuccess } = response.data;
+
+      if (isSuccess) {
+        try {
+          response = await axios.get(
+            "http://localhost:5000/letters?_sort=-createdAt"
+          );
+        } catch (error) {
+          toast.error(error.code);
+          return;
+        }
+        setLetters(response.data);
+      }
+    };
+    getLetters();
+  }, [refresh]); //NOTE - 이렇게하는게 맞나요?
 
   const filteredLetters = letters.filter(
     (letter) => letter.writedTo === activeMember
   );
+
   return (
     <ListWrapper>
       {filteredLetters.length === 0 ? (

@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
-export default function Button({ text, onClick = () => {} }) {
+export default function Button({ text, onClick = () => {}, ...props }) {
   return (
     <BtnWrapper>
-      <button onClick={onClick}>{text}</button>
+      <button onClick={onClick} {...props}>
+        {text}
+      </button>
     </BtnWrapper>
   );
 }

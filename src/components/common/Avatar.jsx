@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
-import defaultUser from "assets/defaultUser.png";
+import defaultUser from "assets/user.svg";
 
 export default function Avatar({ src, size }) {
+  if (src === "null") src = defaultUser;
   return (
     <AvatarFigure size={size}>
       <img src={src ?? defaultUser} alt="아바타이미지" />

@@ -1,38 +1,118 @@
 import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteLetter, editLetter } from "redux/modules/letters";
+import defaultAvatar from "../assets/user.svg";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Detail() {
-  const dispatch = useDispatch();
-  const letters = useSelector((state) => state.letters);
-
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
+  const [letter, setLetter] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
-  const { avatar, nickname, createdAt, writedTo, content } = letters.find(
-    (letter) => letter.id === id
-  );
 
-  const onDeleteBtn = () => {
+  const onDeleteBtn = async () => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (!answer) return;
 
-    dispatch(deleteLetter(id));
-    navigate("/");
+    let response;
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      toast.error(error.code);
+      return;
+    }
+
+    const { success: isSuccess } = response.data;
+
+    if (isSuccess) {
+      try {
+        response = await axios.delete(`http://localhost:5000/letters/${id}`);
+      } catch (error) {
+        toast.error(error.code);
+        return;
+      }
+      navigate("/");
+    }
   };
-  const onEditDone = () => {
+  const onEditDone = async () => {
     if (!editingText) return alert("수정사항이 없습니다.");
 
-    dispatch(editLetter({ id, editingText }));
+    let response;
+    const accessToken = localStorage.getItem("accessToken");
+    try {
+      response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      toast.error(error.code);
+      return;
+    }
+
+    const { success: isSuccess } = response.data;
+
+    if (isSuccess) {
+      try {
+        await axios.patch(`http://localhost:5000/letters/${id}`, {
+          content: editingText,
+        });
+      } catch (error) {
+        toast.error(error.code);
+        return;
+      }
+    }
+    setLetter((prev) => ({ ...prev, content: editingText }));
     setIsEditing(false);
     setEditingText("");
   };
+
+  useEffect(() => {
+    const getLetters = async () => {
+      let response;
+      const accessToken = localStorage.getItem("accessToken");
+      try {
+        response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/user`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      } catch (error) {
+        toast.error(error.code);
+        return;
+      }
+
+      const { success: isSuccess } = response.data;
+
+      if (isSuccess) {
+        try {
+          response = await axios.get("http://localhost:5000/letters");
+        } catch (error) {
+          toast.error(error.code);
+          return;
+        }
+        const receivedLetters = response.data;
+        setLetter(receivedLetters.find((letter) => letter.id === id));
+      }
+    };
+    getLetters();
+  }, []);
+
   return (
     <Container>
       <Link to="/">
@@ -44,17 +124,17 @@ export default function Detail() {
       <DetailWrapper>
         <UserInfo>
           <AvatarAndNickname>
-            <Avatar src={avatar} size="large" />
-            <Nickname>{nickname}</Nickname>
+            <Avatar src={letter.avatar} size="large" />
+            <Nickname>{letter.nickname}</Nickname>
           </AvatarAndNickname>
-          <time>{getFormattedDate(createdAt)}</time>
+          <time>{getFormattedDate(letter.createdAt)}</time>
         </UserInfo>
-        <ToMember>To: {writedTo}</ToMember>
+        <ToMember>To: {letter.writedTo}</ToMember>
         {isEditing ? (
           <>
             <Textarea
               autoFocus
-              defaultValue={content}
+              defaultValue={letter.content}
               onChange={(event) => setEditingText(event.target.value)}
             />
             <BtnsWrapper>
@@ -64,10 +144,18 @@ export default function Detail() {
           </>
         ) : (
           <>
-            <Content>{content}</Content>
+            <Content>{letter.content}</Content>
             <BtnsWrapper>
-              <Button text="수정" onClick={() => setIsEditing(true)} />
-              <Button text="삭제" onClick={onDeleteBtn} />
+              <Button
+                disabled={letter.userId !== localStorage.getItem("id")}
+                text="수정"
+                onClick={() => setIsEditing(true)}
+              />
+              <Button
+                disabled={letter.userId !== localStorage.getItem("id")}
+                text="삭제"
+                onClick={onDeleteBtn}
+              />
             </BtnsWrapper>
           </>
         )}
